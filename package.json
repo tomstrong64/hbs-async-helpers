@@ -1,13 +1,13 @@
 {
-  "name": "handlebars-async-helpers",
-  "version": "1.0.6",
-  "description": "Adding async function support to handlebars helpers",
+  "name": "hbs-async-helpers",
+  "version": "1.0.0",
+  "description": "Adds support for async functions to handlebars",
   "main": "index.js",
   "scripts": {
     "test": "mocha --ui bdd --recursive --timeout 15000"
   },
-  "repository": "https://github.com/gastonrobledo/handlebars-async-helpers",
-  "author": "Gaston Robledo",
+  "repository": "https://github.com/tomstrong64/hbs-async-helpers",
+  "author": "Tom Strong",
   "license": "MIT",
   "peerDependencies": {
     "handlebars": "4.x"

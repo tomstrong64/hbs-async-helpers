@@ -1,25 +1,49 @@
-# Handlebars Async Helpers
+# HBS Async Helpers
 
-Library that adds support to asynchronous function helpers to handlebars lib.
+Library that adds support for asynchronous function helpers to the handlebars template engine.
 
-### How to install
+## How to install
+
 ```shell
-npm install handlebars-async-helpers
+npm i hbs-async-helpers
 ```
 
-### How to use
+## How to import
+
+### CommonJS
+
 ```javascript
-const handlebars = require('handlebars'),
-      asyncHelpers = require('handlebars-async-helpers')
+const Handlebars = require("handlebars"),
+const asyncHelpers = require("hbs-async-helpers");
+```
 
-const hb = asyncHelpers(handlebars)
+### ES6
 
-hb.registerHelper('sleep', async () => new Promise((resolve) => {
-    setTimeout(() => resolve('Done!'), 1000)
-}))
+```javascript
+import Handlebars from 'handlebars',
+import asyncHelpers from 'hbs-async-helpers';
+```
 
-const template = hb.compile('Mark when is completed: {{#sleep}}{{/sleep}}')
-const result = await template()
-console.log(result)
+## Usage
+
+```javascript
+const hb = asyncHelpers(handlebars);
+
+hb.registerHelper(
+  "sleep",
+  async () =>
+    new Promise((resolve) => {
+      setTimeout(() => resolve("Done!"), 1000);
+    })
+);
+
+const template = hb.compile("Mark when is completed: {{#sleep}}{{/sleep}}");
+const result = await template();
+
+console.log(result);
 // 'Mark when is completed: Done!'
 ```
+
+# Acknowlegments
+
+This package has been forked from [handlebars-async-helpers](https://github.com/gastonrobledo/handlebars-async-helpers) originally created and maintained by [Gaston Robledo](https://github.com/gastonrobledo).
