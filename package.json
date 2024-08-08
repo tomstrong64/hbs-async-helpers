@@ -4,7 +4,9 @@
   "description": "Adds support for async functions to handlebars",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --ui bdd --recursive --timeout 15000"
+    "test": "mocha --ui bdd --recursive --timeout 15000",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "repository": "https://github.com/tomstrong64/hbs-async-helpers",
   "author": "Tom Strong",
