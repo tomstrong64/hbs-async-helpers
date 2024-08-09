@@ -13,7 +13,7 @@ npm i hbs-async-helpers
 ### CommonJS
 
 ```javascript
-const Handlebars = require("handlebars"),
+const Handlebars = require("handlebars");
 const asyncHelpers = require("hbs-async-helpers");
 ```
 
