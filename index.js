@@ -1,10 +1,10 @@
-import { registerCoreHelpers } from "./helpers/index.js";
-import { getPackageVersion } from "./utils.js";
+import { registerCoreHelpers } from './helpers/index.js';
+import { getPackageVersion } from './utils.js';
 
 const isPromise = (obj) =>
   !!obj &&
-  (typeof obj === "object" || typeof obj === "function") &&
-  typeof obj.then === "function";
+  (typeof obj === 'object' || typeof obj === 'function') &&
+  typeof obj.then === 'function';
 
 function asyncHelpers(hbs) {
   const handlebars = hbs.create();
@@ -16,8 +16,8 @@ function asyncHelpers(hbs) {
 
     mergeSource(varDeclarations) {
       const sources = super.mergeSource(varDeclarations);
-      sources.prepend("return (async () => {");
-      sources.add(" })()");
+      sources.prepend('return (async () => {');
+      sources.add(' })()');
       return sources;
     }
 
@@ -29,16 +29,16 @@ function asyncHelpers(hbs) {
       source = this.source.wrap(source, location);
 
       if (this.environment.isSimple) {
-        return ["return await ", source, ";"];
+        return ['return await ', source, ';'];
       }
       if (explicit) {
         // This is a case where the buffer operation occurs as a child of another
         // construct, generally braces. We have to explicitly output these buffer
         // operations to ensure that the emitted code goes in the correct location.
-        return ["buffer += await ", source, ";"];
+        return ['buffer += await ', source, ';'];
       }
       source.appendToBuffer = true;
-      source.prepend("await ");
+      source.prepend('await ');
       return source;
     }
   };

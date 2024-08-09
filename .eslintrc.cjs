@@ -5,14 +5,21 @@ module.exports = {
     node: true,
   },
   extends: [
-    "airbnb-base",
-    "plugin:prettier/recommended", // Enables eslint-plugin-prettier and eslint-config-prettier
+    'airbnb-base',
+    'plugin:prettier/recommended', // Enables eslint-plugin-prettier and eslint-config-prettier
   ],
   parserOptions: {
     ecmaVersion: 12,
-    sourceType: "module",
+    sourceType: 'module',
   },
   rules: {
-    "prettier/prettier": "error", // Shows prettier errors as ESLint errors
+    'prettier/prettier': 'error', // Shows prettier errors as ESLint errors
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'always', // Require .js extensions for JavaScript files
+      },
+    ],
   },
 };

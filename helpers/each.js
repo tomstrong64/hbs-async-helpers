@@ -1,15 +1,15 @@
-import { Readable } from "stream";
+import { Readable } from 'stream';
 import {
   appendContextPath,
   createFrame,
   blockParams,
   isPromise,
-} from "../utils.js";
+} from '../utils.js';
 
 export default (handlebars) => {
-  handlebars.registerHelper("each", async function (context, options) {
+  handlebars.registerHelper('each', async function (context, options) {
     if (!options) {
-      throw new Error("Must pass iterator to #each");
+      throw new Error('Must pass iterator to #each');
     }
 
     const { fn } = options;
@@ -26,7 +26,7 @@ export default (handlebars) => {
       )}.`;
     }
 
-    if (typeof context === "function") {
+    if (typeof context === 'function') {
       context = context.call(this);
     }
 
@@ -57,7 +57,7 @@ export default (handlebars) => {
       );
     }
 
-    if (context && typeof context === "object") {
+    if (context && typeof context === 'object') {
       if (isPromise(context)) {
         context = await context;
       }
@@ -81,17 +81,17 @@ export default (handlebars) => {
         const newContext = [];
         await new Promise((resolve, reject) => {
           context
-            .on("data", (item) => {
+            .on('data', (item) => {
               newContext.push(item);
             })
-            .on("end", async () => {
+            .on('end', async () => {
               context = newContext;
               for (let j = context.length; i < j; i++) {
                 await execIteration(i, i, i === context.length - 1);
               }
               resolve();
             })
-            .once("error", (e) => reject(e));
+            .once('error', (e) => reject(e));
         });
       } else {
         let priorKey;
@@ -117,6 +117,6 @@ export default (handlebars) => {
       ret = [inverse(this)];
     }
 
-    return ret.join("");
+    return ret.join('');
   });
 };

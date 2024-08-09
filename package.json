@@ -15,6 +15,10 @@
   "author": "Tom Strong",
   "license": "MIT",
   "type": "module",
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
   "peerDependencies": {
     "handlebars": "4.x"
   },

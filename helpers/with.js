@@ -4,14 +4,14 @@ import {
   createFrame,
   appendContextPath,
   blockParams,
-} from "../utils.js";
+} from '../utils.js';
 
 export default (handlebars) => {
-  handlebars.registerHelper("with", async function (context, options) {
+  handlebars.registerHelper('with', async function (context, options) {
     if (arguments.length !== 2) {
-      throw new Error("#with requires exactly one argument");
+      throw new Error('#with requires exactly one argument');
     }
-    if (typeof context === "function") {
+    if (typeof context === 'function') {
       context = context.call(this);
     } else if (isPromise(context)) {
       context = await context;

@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { readFileSync } from 'fs';
 
 export function blockParams(params, ids) {
   params.path = ids;
@@ -18,7 +18,7 @@ export function extend(obj /* , ...source */) {
 }
 
 export function appendContextPath(contextPath, id) {
-  return (contextPath ? `${contextPath}.` : "") + id;
+  return (contextPath ? `${contextPath}.` : '') + id;
 }
 
 export function createFrame(object) {
@@ -39,15 +39,15 @@ export function isEmpty(value) {
 
 export function isPromise(value) {
   return (
-    typeof value === "object" &&
+    typeof value === 'object' &&
     value !== null &&
-    typeof value.then === "function"
+    typeof value.then === 'function'
   );
 }
 
 export const getPackageVersion = () => {
   const packageJson = JSON.parse(
-    readFileSync(new URL("./package.json", import.meta.url)),
+    readFileSync(new URL('./package.json', import.meta.url)),
   );
   return packageJson.version;
 };
