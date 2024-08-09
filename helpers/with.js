@@ -1,13 +1,17 @@
-const {
-  isPromise, isEmpty, createFrame, appendContextPath, blockParams,
-} = require('../utils');
+import {
+  isPromise,
+  isEmpty,
+  createFrame,
+  appendContextPath,
+  blockParams,
+} from "../utils.js";
 
-module.exports = (handlebars) => {
-  handlebars.registerHelper('with', async function (context, options) {
+export default (handlebars) => {
+  handlebars.registerHelper("with", async function (context, options) {
     if (arguments.length !== 2) {
-      throw new Error('#with requires exactly one argument');
+      throw new Error("#with requires exactly one argument");
     }
-    if (typeof context === 'function') {
+    if (typeof context === "function") {
       context = context.call(this);
     } else if (isPromise(context)) {
       context = await context;
@@ -21,7 +25,7 @@ module.exports = (handlebars) => {
         data = createFrame(options.data);
         data.contextPath = appendContextPath(
           options.data.contextPath,
-          options.ids[0],
+          options.ids[0]
         );
       }
 

@@ -1,11 +1,11 @@
-const { isPromise, isEmpty } = require('../utils');
+import { isPromise, isEmpty } from "../utils.js";
 
-module.exports = (handlebars) => {
-  handlebars.registerHelper('if', async function (conditional, options) {
+export default (handlebars) => {
+  handlebars.registerHelper("if", async function (conditional, options) {
     if (arguments.length !== 2) {
-      throw new Error('#if requires exactly one argument');
+      throw new Error("#if requires exactly one argument");
     }
-    if (typeof conditional === 'function') {
+    if (typeof conditional === "function") {
       conditional = conditional.call(this);
     } else if (isPromise(conditional)) {
       conditional = await conditional;
@@ -20,9 +20,9 @@ module.exports = (handlebars) => {
     return options.fn(this);
   });
 
-  handlebars.registerHelper('unless', function (conditional, options) {
+  handlebars.registerHelper("unless", function (conditional, options) {
     if (arguments.length !== 2) {
-      throw new Error('#unless requires exactly one argument');
+      throw new Error("#unless requires exactly one argument");
     }
     return handlebars.helpers.if.call(this, conditional, {
       fn: options.inverse,

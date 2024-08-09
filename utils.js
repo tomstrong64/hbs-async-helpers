@@ -1,8 +1,11 @@
-function blockParams(params, ids) {
+import { readFileSync } from "fs";
+
+export function blockParams(params, ids) {
   params.path = ids;
   return params;
 }
-function extend(obj /* , ...source */) {
+
+export function extend(obj /* , ...source */) {
   for (let i = 1; i < arguments.length; i++) {
     for (const key in arguments[i]) {
       if (Object.prototype.hasOwnProperty.call(arguments[i], key)) {
@@ -13,35 +16,38 @@ function extend(obj /* , ...source */) {
 
   return obj;
 }
-function appendContextPath(contextPath, id) {
-  return (contextPath ? `${contextPath}.` : '') + id;
+
+export function appendContextPath(contextPath, id) {
+  return (contextPath ? `${contextPath}.` : "") + id;
 }
-function createFrame(object) {
+
+export function createFrame(object) {
   const frame = extend({}, object);
   frame._parent = object;
   return frame;
 }
-function isEmpty(value) {
+
+export function isEmpty(value) {
   if (!value && value !== 0) {
     return true;
-  } if (Array.isArray(value) && value.length === 0) {
+  }
+  if (Array.isArray(value) && value.length === 0) {
     return true;
   }
   return false;
 }
-function isPromise(value) {
+
+export function isPromise(value) {
   return (
-    typeof value === 'object'
-        && value !== null
-        && typeof value.then === 'function'
+    typeof value === "object" &&
+    value !== null &&
+    typeof value.then === "function"
   );
 }
 
-module.exports = {
-  blockParams,
-  extend,
-  appendContextPath,
-  createFrame,
-  isEmpty,
-  isPromise,
+export const getPackageVersion = () => {
+  const packageJson = JSON.parse(
+    readFileSync(new URL("./package.json", import.meta.url))
+  );
+  return packageJson.version;
 };

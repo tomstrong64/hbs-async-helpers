@@ -1,7 +1,10 @@
-const app = require('./package.json');
-const { registerCoreHelpers } = require('./helpers');
+import { registerCoreHelpers } from "./helpers/index.js";
+import { getPackageVersion } from "./utils.js";
 
-const isPromise = (obj) => !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.then === 'function';
+const isPromise = (obj) =>
+  !!obj &&
+  (typeof obj === "object" || typeof obj === "function") &&
+  typeof obj.then === "function";
 
 function asyncHelpers(hbs) {
   const handlebars = hbs.create();
@@ -13,8 +16,8 @@ function asyncHelpers(hbs) {
 
     mergeSource(varDeclarations) {
       const sources = super.mergeSource(varDeclarations);
-      sources.prepend('return (async () => {');
-      sources.add(' })()');
+      sources.prepend("return (async () => {");
+      sources.add(" })()");
       return sources;
     }
 
@@ -26,15 +29,16 @@ function asyncHelpers(hbs) {
       source = this.source.wrap(source, location);
 
       if (this.environment.isSimple) {
-        return ['return await ', source, ';'];
-      } if (explicit) {
+        return ["return await ", source, ";"];
+      }
+      if (explicit) {
         // This is a case where the buffer operation occurs as a child of another
         // construct, generally braces. We have to explicitly output these buffer
         // operations to ensure that the emitted code goes in the correct location.
-        return ['buffer += await ', source, ';'];
+        return ["buffer += await ", source, ";"];
       }
       source.appendToBuffer = true;
-      source.prepend('await ');
+      source.prepend("await ");
       return source;
     }
   };
@@ -60,16 +64,26 @@ function asyncHelpers(hbs) {
   }
 
   handlebars.template = function (spec) {
-    spec.main_d = (prog, props, container, depth, data, blockParams, depths) => async (context) => {
-      // const main = await spec.main
-      container.escapeExpression = escapeExpression;
-      container.lookupProperty = lookupProperty(container.lookupProperty);
-      if (depths.length == 0) {
-        depths = [data.root];
-      }
-      const v = spec.main(container, context, container.helpers, container.partials, data, blockParams, depths);
-      return v;
-    };
+    spec.main_d =
+      (prog, props, container, depth, data, blockParams, depths) =>
+      async (context) => {
+        // const main = await spec.main
+        container.escapeExpression = escapeExpression;
+        container.lookupProperty = lookupProperty(container.lookupProperty);
+        if (depths.length == 0) {
+          depths = [data.root];
+        }
+        const v = spec.main(
+          container,
+          context,
+          container.helpers,
+          container.partials,
+          data,
+          blockParams,
+          depths
+        );
+        return v;
+      };
     return _template(spec, handlebars);
   };
 
@@ -82,11 +96,11 @@ function asyncHelpers(hbs) {
       return compiled.call(handlebars, context, execOptions);
     };
   };
-  handlebars.ASYNC_VERSION = app.version;
+  handlebars.ASYNC_VERSION = getPackageVersion();
 
   registerCoreHelpers(handlebars);
 
   return handlebars;
 }
 
-module.exports = asyncHelpers;
+export default asyncHelpers;

@@ -1,15 +1,15 @@
-const { Readable } = require('stream');
-const {
+import { Readable } from "stream";
+import {
   appendContextPath,
   createFrame,
   blockParams,
   isPromise,
-} = require('../utils');
+} from "../utils.js";
 
-module.exports = (handlebars) => {
-  handlebars.registerHelper('each', async function (context, options) {
+export default (handlebars) => {
+  handlebars.registerHelper("each", async function (context, options) {
     if (!options) {
-      throw new Error('Must pass iterator to #each');
+      throw new Error("Must pass iterator to #each");
     }
 
     const { fn } = options;
@@ -22,11 +22,11 @@ module.exports = (handlebars) => {
     if (options.data && options.ids) {
       contextPath = `${appendContextPath(
         options.data.contextPath,
-        options.ids[0],
+        options.ids[0]
       )}.`;
     }
 
-    if (typeof context === 'function') {
+    if (typeof context === "function") {
       context = context.call(this);
     }
 
@@ -51,13 +51,13 @@ module.exports = (handlebars) => {
           data,
           blockParams: blockParams(
             [context[field], field],
-            [contextPath + field, null],
+            [contextPath + field, null]
           ),
-        }),
+        })
       );
     }
 
-    if (context && typeof context === 'object') {
+    if (context && typeof context === "object") {
       if (isPromise(context)) {
         context = await context;
       }
@@ -81,17 +81,17 @@ module.exports = (handlebars) => {
         const newContext = [];
         await new Promise((resolve, reject) => {
           context
-            .on('data', (item) => {
+            .on("data", (item) => {
               newContext.push(item);
             })
-            .on('end', async () => {
+            .on("end", async () => {
               context = newContext;
               for (let j = context.length; i < j; i++) {
                 await execIteration(i, i, i === context.length - 1);
               }
               resolve();
             })
-            .once('error', (e) => reject(e));
+            .once("error", (e) => reject(e));
         });
       } else {
         let priorKey;
@@ -117,6 +117,6 @@ module.exports = (handlebars) => {
       ret = [inverse(this)];
     }
 
-    return ret.join('');
+    return ret.join("");
   });
 };
