@@ -80,7 +80,7 @@ function asyncHelpers(hbs) {
           container.partials,
           data,
           blockParams,
-          depths
+          depths,
         );
         return v;
       };

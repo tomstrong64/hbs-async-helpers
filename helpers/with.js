@@ -25,7 +25,7 @@ export default (handlebars) => {
         data = createFrame(options.data);
         data.contextPath = appendContextPath(
           options.data.contextPath,
-          options.ids[0]
+          options.ids[0],
         );
       }
 

@@ -47,7 +47,7 @@ export function isPromise(value) {
 
 export const getPackageVersion = () => {
   const packageJson = JSON.parse(
-    readFileSync(new URL("./package.json", import.meta.url))
+    readFileSync(new URL("./package.json", import.meta.url)),
   );
   return packageJson.version;
 };

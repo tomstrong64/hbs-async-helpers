@@ -22,7 +22,7 @@ export default (handlebars) => {
     if (options.data && options.ids) {
       contextPath = `${appendContextPath(
         options.data.contextPath,
-        options.ids[0]
+        options.ids[0],
       )}.`;
     }
 
@@ -51,9 +51,9 @@ export default (handlebars) => {
           data,
           blockParams: blockParams(
             [context[field], field],
-            [contextPath + field, null]
+            [contextPath + field, null],
           ),
-        })
+        }),
       );
     }
 
