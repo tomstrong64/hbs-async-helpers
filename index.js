@@ -1,4 +1,4 @@
-import { registerCoreHelpers } from './helpers/index.js';
+import registerCoreHelpers from './helpers/index.js';
 import { getPackageVersion } from './utils.js';
 
 const isPromise = (obj) =>
