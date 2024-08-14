@@ -7,7 +7,7 @@ import {
 } from '../utils.js';
 
 export default (handlebars) => {
-  handlebars.registerHelper('each', async function (context, options) {
+  handlebars.registerHelper('each', async (context, options) => {
     if (!options) {
       throw new Error('Must pass iterator to #each');
     }
@@ -34,7 +34,7 @@ export default (handlebars) => {
       data = createFrame(options.data);
     }
 
-    async function execIteration(field, index, last) {
+    const execIteration = async (field, index, last) => {
       if (data) {
         data.key = field;
         data.index = index;
@@ -55,7 +55,7 @@ export default (handlebars) => {
           ),
         }),
       );
-    }
+    };
 
     if (context && typeof context === 'object') {
       if (isPromise(context)) {

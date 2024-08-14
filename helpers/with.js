@@ -7,19 +7,23 @@ import {
 } from '../utils.js';
 
 export default (handlebars) => {
-  handlebars.registerHelper('with', async function (context, options) {
-    if (arguments.length !== 2) {
+  handlebars.registerHelper('with', async (...args) => {
+    if (args.length !== 2) {
       throw new Error('#with requires exactly one argument');
     }
+
+    const [context, options] = args;
+    let newContext = context;
+
     if (typeof context === 'function') {
-      context = context.call(this);
+      newContext = context.call(this);
     } else if (isPromise(context)) {
-      context = await context;
+      newContext = await context;
     }
 
     const { fn } = options;
 
-    if (!isEmpty(context)) {
+    if (!isEmpty(newContext)) {
       let { data } = options;
       if (options.data && options.ids) {
         data = createFrame(options.data);
@@ -29,9 +33,9 @@ export default (handlebars) => {
         );
       }
 
-      return fn(context, {
+      return fn(newContext, {
         data,
-        blockParams: blockParams([context], [data && data.contextPath]),
+        blockParams: blockParams([newContext], [data && data.contextPath]),
       });
     }
     return options.inverse(this);
