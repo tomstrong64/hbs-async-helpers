@@ -6,7 +6,7 @@ const isPromise = (obj) =>
   (typeof obj === 'object' || typeof obj === 'function') &&
   typeof obj.then === 'function';
 
-function asyncHelpers(hbs) {
+const asyncHelpers = (hbs) => {
   const handlebars = hbs.create();
   const asyncCompiler = class extends hbs.JavaScriptCompiler {
     constructor() {
@@ -48,26 +48,26 @@ function asyncHelpers(hbs) {
   const { compile, escapeExpression } = handlebars;
   const { template: vmTemplate } = handlebars.VM;
 
-  const asyncEscapeExpression = function (value) {
+  const asyncEscapeExpression = (value) => {
     if (isPromise(value)) {
       return value.then((v) => escapeExpression(v));
     }
     return escapeExpression(value);
   };
 
-  function lookupProperty(containerLookupProperty) {
-    return function (parent, propertyName) {
+  const lookupProperty = (containerLookupProperty) => {
+    return (parent, propertyName) => {
       if (isPromise(parent)) {
         return parent.then((p) => containerLookupProperty(p, propertyName));
       }
       return containerLookupProperty(parent, propertyName);
     };
-  }
+  };
 
-  handlebars.template = function (spec) {
+  handlebars.template = (spec) => {
     const asyncSpec = spec;
     asyncSpec.main_d =
-      (prog, props, container, depth, data, blockParams, depths) =>
+      (_prog, _props, container, _depth, data, blockParams, depths) =>
       async (context) => {
         // const main = await spec.main
         const asyncContainer = container;
@@ -77,7 +77,7 @@ function asyncHelpers(hbs) {
         );
 
         let asyncDepths = depths;
-        if (depths.length == 0) {
+        if (depths.length === 0) {
           asyncDepths = [data.root];
         }
         const v = asyncSpec.main(
@@ -94,10 +94,10 @@ function asyncHelpers(hbs) {
     return vmTemplate(asyncSpec, handlebars);
   };
 
-  handlebars.compile = function (template, options) {
+  handlebars.compile = (template, options) => {
     const compiled = compile.apply(handlebars, [template, { ...options }]);
 
-    return function (context, execOptions) {
+    return (context, execOptions) => {
       const newContext = context || {};
 
       return compiled.call(handlebars, newContext, execOptions);
@@ -108,6 +108,6 @@ function asyncHelpers(hbs) {
   registerCoreHelpers(handlebars);
 
   return handlebars;
-}
+};
 
 export default asyncHelpers;
