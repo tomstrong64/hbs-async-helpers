@@ -7,7 +7,7 @@ import {
 } from '../utils.js';
 
 export default (handlebars) => {
-  handlebars.registerHelper('each', async function (context, options) {
+  handlebars.registerHelper('each', async (context, options) => {
     if (!options) {
       throw new Error('Must pass iterator to #each');
     }
@@ -34,7 +34,7 @@ export default (handlebars) => {
       data = createFrame(options.data);
     }
 
-    async function execIteration(field, index, last) {
+    const execIteration = async (field, index, last) => {
       if (data) {
         data.key = field;
         data.index = index;
@@ -55,14 +55,14 @@ export default (handlebars) => {
           ),
         }),
       );
-    }
+    };
 
     if (context && typeof context === 'object') {
       if (isPromise(context)) {
         context = await context;
       }
       if (Array.isArray(context)) {
-        for (let j = context.length; i < j; i++) {
+        for (let j = context.length; i < j; i += 1) {
           if (i in context) {
             await execIteration(i, i, i === context.length - 1);
           }
@@ -74,7 +74,7 @@ export default (handlebars) => {
           newContext.push(it.value);
         }
         context = newContext;
-        for (let j = context.length; i < j; i++) {
+        for (let j = context.length; i < j; i += 1) {
           await execIteration(i, i, i === context.length - 1);
         }
       } else if (context instanceof Readable) {
@@ -86,7 +86,7 @@ export default (handlebars) => {
             })
             .on('end', async () => {
               context = newContext;
-              for (let j = context.length; i < j; i++) {
+              for (let j = context.length; i < j; i += 1) {
                 await execIteration(i, i, i === context.length - 1);
               }
               resolve();
@@ -104,7 +104,7 @@ export default (handlebars) => {
             await execIteration(priorKey, i - 1);
           }
           priorKey = key;
-          i++;
+          i += 1;
         }
         if (priorKey !== undefined) {
           await execIteration(priorKey, i - 1, true);
