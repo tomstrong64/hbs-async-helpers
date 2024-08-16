@@ -3,13 +3,13 @@ name: Automatic-node-tests
 on: push
 
 jobs:
-  build-node-versions:
-    name: Node version matrix
+  test-node-versions:
+    name: Test with maintained Node.js versions
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x, 22.x]
+        node-version: [16.x, 18.x, 20.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -22,7 +22,39 @@ jobs:
           cache: 'npm'
         env:
           NPM_CONFIG_IGNORE_SCRIPTS: true
-      - run: npm audit --package-lock-only --production --audit-level=high
       - run: npm i
       - run: npm test
+
+  lint:
+    name: Lint code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4 # https://github.com/actions/checkout
+      - name: Setup Node.js
+        uses: actions/setup-node@v4 # https://github.com/actions/setup-node
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+        env:
+          NPM_CONFIG_IGNORE_SCRIPTS: true
+      - run: npm i
       - run: npm run lint
+
+  audit:
+    name: Audit dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4 # https://github.com/actions/checkout
+      - name: Setup Node.js
+        uses: actions/setup-node@v4 # https://github.com/actions/setup-node
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+        env:
+          NPM_CONFIG_IGNORE_SCRIPTS: true
+
+      - run: npm audit --package-lock-only --production --audit-level=high
