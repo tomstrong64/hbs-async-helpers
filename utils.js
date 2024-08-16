@@ -6,7 +6,7 @@ export function blockParams(params, ids) {
 }
 
 export function extend(obj /* , ...source */) {
-  for (let i = 1; i < arguments.length; i++) {
+  for (let i = 1; i < arguments.length; i += 1) {
     for (const key in arguments[i]) {
       if (Object.prototype.hasOwnProperty.call(arguments[i], key)) {
         obj[key] = arguments[i][key];
