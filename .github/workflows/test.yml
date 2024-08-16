@@ -1,0 +1,26 @@
+name: Test
+
+on: push
+
+jobs:
+  test-node-versions:
+    name: Test with maintained Node.js versions
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4 # https://github.com/actions/checkout
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4 # https://github.com/actions/setup-node
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+        env:
+          NPM_CONFIG_IGNORE_SCRIPTS: true
+      - run: npm i
+      - run: npm test
