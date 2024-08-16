@@ -1,4 +1,4 @@
-import { registerCoreHelpers } from './helpers/index.js';
+import registerCoreHelpers from './helpers/index.js';
 import { getPackageVersion } from './utils.js';
 
 const isPromise = (obj) =>
@@ -6,7 +6,7 @@ const isPromise = (obj) =>
   (typeof obj === 'object' || typeof obj === 'function') &&
   typeof obj.then === 'function';
 
-function asyncHelpers(hbs) {
+const asyncHelpers = (hbs) => {
   const handlebars = hbs.create();
   const asyncCompiler = class extends hbs.JavaScriptCompiler {
     constructor() {
@@ -22,78 +22,85 @@ function asyncHelpers(hbs) {
     }
 
     appendToBuffer(source, location, explicit) {
+      let asyncSource;
       // Force a source as this simplifies the merge logic.
       if (!Array.isArray(source)) {
-        source = [source];
+        asyncSource = [source];
       }
-      source = this.source.wrap(source, location);
+      asyncSource = this.source.wrap(source, location);
 
       if (this.environment.isSimple) {
-        return ['return await ', source, ';'];
+        return ['return await ', asyncSource, ';'];
       }
       if (explicit) {
         // This is a case where the buffer operation occurs as a child of another
         // construct, generally braces. We have to explicitly output these buffer
         // operations to ensure that the emitted code goes in the correct location.
-        return ['buffer += await ', source, ';'];
+        return ['buffer += await ', asyncSource, ';'];
       }
-      source.appendToBuffer = true;
-      source.prepend('await ');
-      return source;
+      asyncSource.appendToBuffer = true;
+      asyncSource.prepend('await ');
+      return asyncSource;
     }
   };
   handlebars.JavaScriptCompiler = asyncCompiler;
 
-  const _compile = handlebars.compile;
-  const _template = handlebars.VM.template;
-  const _escapeExpression = handlebars.escapeExpression;
-  const escapeExpression = function (value) {
+  const { compile, escapeExpression } = handlebars;
+  const { template: vmTemplate } = handlebars.VM;
+
+  const asyncEscapeExpression = (value) => {
     if (isPromise(value)) {
-      return value.then((v) => _escapeExpression(v));
+      return value.then((v) => escapeExpression(v));
     }
-    return _escapeExpression(value);
+    return escapeExpression(value);
   };
 
-  function lookupProperty(containerLookupProperty) {
-    return function (parent, propertyName) {
+  const lookupProperty = (containerLookupProperty) => {
+    return (parent, propertyName) => {
       if (isPromise(parent)) {
         return parent.then((p) => containerLookupProperty(p, propertyName));
       }
       return containerLookupProperty(parent, propertyName);
     };
-  }
+  };
 
-  handlebars.template = function (spec) {
-    spec.main_d =
-      (prog, props, container, depth, data, blockParams, depths) =>
+  handlebars.template = (spec) => {
+    const asyncSpec = spec;
+    asyncSpec.main_d =
+      (_prog, _props, container, _depth, data, blockParams, depths) =>
       async (context) => {
         // const main = await spec.main
-        container.escapeExpression = escapeExpression;
-        container.lookupProperty = lookupProperty(container.lookupProperty);
-        if (depths.length == 0) {
-          depths = [data.root];
+        const asyncContainer = container;
+        asyncContainer.escapeExpression = asyncEscapeExpression;
+        asyncContainer.lookupProperty = lookupProperty(
+          container.lookupProperty,
+        );
+
+        let asyncDepths = depths;
+        if (depths.length === 0) {
+          asyncDepths = [data.root];
         }
-        const v = spec.main(
-          container,
+        const v = asyncSpec.main(
+          asyncContainer,
           context,
           container.helpers,
           container.partials,
           data,
           blockParams,
-          depths,
+          asyncDepths,
         );
         return v;
       };
-    return _template(spec, handlebars);
+    return vmTemplate(asyncSpec, handlebars);
   };
 
-  handlebars.compile = function (template, options) {
-    const compiled = _compile.apply(handlebars, [template, { ...options }]);
+  handlebars.compile = (template, options) => {
+    const compiled = compile.apply(handlebars, [template, { ...options }]);
 
-    return function (context, execOptions) {
-      context = context || {};
+    return (context, execOptions) => {
+      const newContext = context || {};
 
-      return compiled.call(handlebars, context, execOptions);
+      return compiled.call(handlebars, newContext, execOptions);
     };
   };
   handlebars.ASYNC_VERSION = getPackageVersion();
@@ -101,6 +108,6 @@ function asyncHelpers(hbs) {
   registerCoreHelpers(handlebars);
 
   return handlebars;
-}
+};
 
 export default asyncHelpers;

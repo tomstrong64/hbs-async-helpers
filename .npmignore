@@ -1,4 +1,4 @@
 .github
 node_modules
-tests
-.eslintrc.js
+test
+.eslintrc.cjs
