@@ -26,8 +26,10 @@ export default (handlebars) => {
       )}.`;
     }
 
-    if (typeof context === 'function') {
-      context = context.call(this);
+    let currentContext = context;
+
+    if (typeof currentContext === 'function') {
+      currentContext = currentContext.call(this);
     }
 
     if (options.data) {
@@ -47,67 +49,58 @@ export default (handlebars) => {
       }
 
       ret.push(
-        await fn(context[field], {
+        await fn(currentContext[field], {
           data,
           blockParams: blockParams(
-            [context[field], field],
+            [currentContext[field], field],
             [contextPath + field, null],
           ),
         }),
       );
     };
 
-    if (context && typeof context === 'object') {
-      if (isPromise(context)) {
-        context = await context;
+    /* eslint-disable no-await-in-loop */ // have to happen in order
+    if (currentContext && typeof currentContext === 'object') {
+      if (isPromise(currentContext)) {
+        currentContext = await currentContext;
       }
-      if (Array.isArray(context)) {
-        for (let j = context.length; i < j; i += 1) {
-          if (i in context) {
-            await execIteration(i, i, i === context.length - 1);
+      if (Array.isArray(currentContext)) {
+        for (let j = currentContext.length; i < j; i += 1) {
+          if (i in currentContext) {
+            await execIteration(i, i, i === currentContext.length - 1);
           }
         }
-      } else if (global.Symbol && context[global.Symbol.iterator]) {
+      } else if (global.Symbol && currentContext[global.Symbol.iterator]) {
         const newContext = [];
-        const iterator = context[global.Symbol.iterator]();
+        const iterator = currentContext[global.Symbol.iterator]();
         for (let it = iterator.next(); !it.done; it = iterator.next()) {
           newContext.push(it.value);
         }
-        context = newContext;
-        for (let j = context.length; i < j; i += 1) {
-          await execIteration(i, i, i === context.length - 1);
+        currentContext = newContext;
+        for (let j = currentContext.length; i < j; i += 1) {
+          await execIteration(i, i, i === currentContext.length - 1);
         }
-      } else if (context instanceof Readable) {
+      } else if (currentContext instanceof Readable) {
         const newContext = [];
         await new Promise((resolve, reject) => {
-          context
+          currentContext
             .on('data', (item) => {
               newContext.push(item);
             })
             .on('end', async () => {
-              context = newContext;
-              for (let j = context.length; i < j; i += 1) {
-                await execIteration(i, i, i === context.length - 1);
+              currentContext = newContext;
+              for (let j = currentContext.length; i < j; i += 1) {
+                await execIteration(i, i, i === currentContext.length - 1);
               }
               resolve();
             })
             .once('error', (e) => reject(e));
         });
       } else {
-        let priorKey;
-
-        for (const key of Object.keys(context)) {
-          // We're running the iterations one step out of sync so we can detect
-          // the last iteration without have to scan the object twice and create
-          // an itermediate keys array.
-          if (priorKey !== undefined) {
-            await execIteration(priorKey, i - 1);
-          }
-          priorKey = key;
-          i += 1;
-        }
-        if (priorKey !== undefined) {
-          await execIteration(priorKey, i - 1, true);
+        const entries = Object.entries(currentContext);
+        for (let j = 0; j < entries.length; j += 1) {
+          const [key] = entries[j];
+          await execIteration(key, j, j === entries.length - 1);
         }
       }
     }
