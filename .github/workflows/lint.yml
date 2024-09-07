@@ -4,7 +4,6 @@ on: push
 
 jobs:
   lint:
-    if: false
     name: Lint code
     runs-on: ubuntu-latest
     continue-on-error: true
