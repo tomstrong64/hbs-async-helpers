@@ -97,20 +97,10 @@ export default (handlebars) => {
             .once('error', (e) => reject(e));
         });
       } else {
-        let priorKey;
-
-        for (const key of Object.keys(currentContext)) {
-          // We're running the iterations one step out of sync so we can detect
-          // the last iteration without have to scan the object twice and create
-          // an itermediate keys array.
-          if (priorKey !== undefined) {
-            await execIteration(priorKey, i - 1);
-          }
-          priorKey = key;
-          i += 1;
-        }
-        if (priorKey !== undefined) {
-          await execIteration(priorKey, i - 1, true);
+        const entries = Object.entries(currentContext);
+        for (let j = 0; j < entries.length; j += 1) {
+          const [key] = entries[j];
+          await execIteration(key, j, j === entries.length - 1);
         }
       }
     }
