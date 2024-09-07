@@ -203,7 +203,10 @@ describe('Test async helpers', () => {
   });
 
   it('Test with custom helpers and complex replacements', async () => {
-    const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
+    const timeout = (ms) =>
+      new Promise((res) => {
+        setTimeout(res, ms);
+      });
     const delay = async function delayFn() {
       await timeout(50);
       return 1000;
@@ -272,12 +275,14 @@ describe('Test async helpers', () => {
             results.push(options.fn(this));
             break;
         }
-        return Promise.all(results).then((results) => results.join(''));
+        return Promise.all(results).then((resolvedResults) =>
+          resolvedResults.join(''),
+        );
       },
     });
 
     hbs.registerHelper('delay', delay);
-    hbs.registerHelper('cursor', async (options) => {
+    hbs.registerHelper('cursor', async () => {
       await timeout(50);
       return [{ name: 'test' }, { name: 'test2' }];
     });
@@ -301,7 +306,9 @@ describe('Test async helpers', () => {
     const expected = `<p>Gaston Robledo</p>`;
     const compiled = hbs.compile(template);
     const result = await compiled({
-      value: new Promise((resolve) => resolve('Gaston Robledo')),
+      value: new Promise((resolve) => {
+        resolve('Gaston Robledo');
+      }),
     });
     should.equal(result, expected);
   });
