@@ -59,6 +59,7 @@ export default (handlebars) => {
       );
     };
 
+    /* eslint-disable no-await-in-loop */ // have to happen in order
     if (currentContext && typeof currentContext === 'object') {
       if (isPromise(currentContext)) {
         currentContext = await currentContext;
