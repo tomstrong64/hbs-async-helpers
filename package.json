@@ -15,6 +15,16 @@
   "author": "Tom Strong",
   "license": "MIT",
   "type": "module",
+  "keywords": [
+    "handlebars",
+    "hbs",
+    "async",
+    "helper",
+    "promise",
+    "html",
+    "template",
+    "engine"
+  ],
   "prettier": {
     "singleQuote": true,
     "trailingComma": "all"
