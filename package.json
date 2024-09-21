@@ -1,6 +1,6 @@
 {
   "name": "hbs-async-helpers",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Adds support for async functions to handlebars",
   "main": "index.js",
   "scripts": {
@@ -15,6 +15,16 @@
   "author": "Tom Strong",
   "license": "MIT",
   "type": "module",
+  "keywords": [
+    "handlebars",
+    "hbs",
+    "async",
+    "helper",
+    "promise",
+    "html",
+    "template",
+    "engine"
+  ],
   "prettier": {
     "singleQuote": true,
     "trailingComma": "all"
