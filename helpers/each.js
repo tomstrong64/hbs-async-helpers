@@ -12,8 +12,7 @@ export default (handlebars) => {
       throw new Error('Must pass iterator to #each');
     }
 
-    const { fn } = options;
-    const { inverse } = options;
+    const { fn, inverse } = options;
     let i = 0;
     let ret = [];
     let data;
