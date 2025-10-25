@@ -17,5 +17,5 @@ jobs:
           cache: 'npm'
         env:
           NPM_CONFIG_IGNORE_SCRIPTS: true
-
-      - run: npm audit --package-lock-only --production --audit-level=high
+      # Audit prod dependencies (there are none and hopefully never will be any :P)
+      - run: npm audit --package-lock-only --omit=dev --audit-level=high
