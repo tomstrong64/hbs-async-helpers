@@ -6,7 +6,9 @@
   "scripts": {
     "test": "mocha --ui bdd --recursive --timeout 15000",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write ."
   },
   "repository": {
     "type": "git",
@@ -33,14 +35,14 @@
     "handlebars": "4.x"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
+    "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-config-prettier": "^9.1.2",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
     "handlebars": "^4.7.8",
-    "mocha": "^10.0.0",
-    "prettier": "^3.3.3",
+    "mocha": "^11.7.5",
+    "prettier": "^3.6.2",
     "should": "^13.2.3"
   }
 }

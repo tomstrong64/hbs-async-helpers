@@ -14,9 +14,9 @@ jobs:
 
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v4 # https://github.com/actions/checkout
+        uses: actions/checkout@v5 # https://github.com/actions/checkout
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4 # https://github.com/actions/setup-node
+        uses: actions/setup-node@v6 # https://github.com/actions/setup-node
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'

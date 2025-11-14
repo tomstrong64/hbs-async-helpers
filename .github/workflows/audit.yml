@@ -9,13 +9,13 @@ jobs:
 
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v4 # https://github.com/actions/checkout
+        uses: actions/checkout@v5 # https://github.com/actions/checkout
       - name: Setup Node.js
-        uses: actions/setup-node@v4 # https://github.com/actions/setup-node
+        uses: actions/setup-node@v6 # https://github.com/actions/setup-node
         with:
-          node-version: '20.x'
+          node-version: '24.x'
           cache: 'npm'
         env:
           NPM_CONFIG_IGNORE_SCRIPTS: true
-
-      - run: npm audit --package-lock-only --production --audit-level=high
+      # Audit prod dependencies (there are none and hopefully never will be any :P)
+      - run: npm audit --package-lock-only --omit=dev --audit-level=high
